@@ -4,39 +4,61 @@ const c = canvas.getContext("2d");
 canvas.width = 1024;
 canvas.height = 576;
 
-const gravity = 0.5;
+const scaledCanvas = {
+  width: canvas.width / 4,
+  height: canvas.height / 4,
+};
 
-class Player {
-  constructor(postion) {
-    this.position = postion;
-    this.velocity = {
-      x: 0,
-      y: 1,
-    };
-    this.height = 100;
-  }
-
-  draw() {
-    c.fillStyle = "red";
-    c.fillRect(this.position.x, this.position.y, 100, this.height);
-  }
-
-  update() {
-    this.draw();
-    this.position.y += this.velocity.y;
-    this.position.x += this.velocity.x;
-    if (this.position.y + this.height + this.velocity.y < canvas.height) this.velocity.y += gravity;
-    else this.velocity.y = 0;
-  }
+const floorCollisions2D = [];
+for (let i = 0; i < floorCollisions.length; i += 36) {
+  floorCollisions2D.push(floorCollisions.slice(i, i + 36));
 }
 
-const player = new Player({
-  x: 0,
-  y: 0,
+const collisionBlocks = [];
+floorCollisions2D.forEach((row, y) => {
+  row.forEach((symbol, x) => {
+    if (symbol === 202) {
+      collisionBlocks.push(
+        new CollisionBlock({
+          position: {
+            x: x * 16,
+            y: y * 16,
+          },
+        })
+      );
+    }
+  });
 });
-const player2 = new Player({
-  x: 300,
-  y: 100,
+
+const platformCollisions2D = [];
+for (let i = 0; i < platformCollisions.length; i += 36) {
+  platformCollisions2D.push(platformCollisions.slice(i, i + 36));
+}
+
+const platformCollisionBlocks = [];
+platformCollisions2D.forEach((row, y) => {
+  row.forEach((symbol, x) => {
+    if (symbol === 202) {
+      platformCollisionBlocks.push(
+        new CollisionBlock({
+          position: {
+            x: x * 16,
+            y: y * 16,
+          },
+        })
+      );
+    }
+  });
+});
+
+const gravity = 0.5;
+
+const player = new Player({
+  postion: {
+    x: 100,
+    y: 0,
+  },
+  collisionBlocks,
 });
 
 const keys = {
@@ -48,16 +70,39 @@ const keys = {
   },
 };
 
+const background = new Sprite({
+  position: {
+    x: 0,
+    y: 0,
+  },
+  imageSrc: "./img/background.png",
+});
+
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "white";
   c.fillRect(0, 0, canvas.width, canvas.height);
+
+  c.save();
+  c.scale(4, 4);
+  c.translate(0, -background.image.height + scaledCanvas.height);
+  background.update();
+
+  collisionBlocks.forEach((collisionBlock) => {
+    collisionBlock.update();
+  });
+
+  platformCollisionBlocks.forEach((block) => {
+    block.update();
+  });
+
   player.update();
-  player2.update();
 
   player.velocity.x = 0;
   if (keys.d.pressed) player.velocity.x = 5;
   else if (keys.a.pressed) player.velocity.x = -5;
+
+  c.restore();
 }
 
 animate();
@@ -72,7 +117,7 @@ window.addEventListener("keydown", (event) => {
       keys.a.pressed = true;
       break;
     case "w":
-      player.velocity.y = -20;
+      player.velocity.y = -10;
       break;
   }
 });
