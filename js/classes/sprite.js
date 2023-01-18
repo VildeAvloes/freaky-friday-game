@@ -1,4 +1,4 @@
-//sprite = image withing gamelang
+//sprite = image within gamelang
 class Sprite {
   constructor({ position, imageSrc }) {
     this.position = position;
