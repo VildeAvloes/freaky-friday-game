@@ -17,7 +17,7 @@ class Player extends Sprite {
       height: 10,
     };
     this.animations = animations;
-    //Left animations
+    //Default direction of player
     this.lastDirection = "right";
 
     //loop through objects in animations
@@ -31,8 +31,9 @@ class Player extends Sprite {
 
   //SwitchSprit: method to switch image eg. from idle to run
   switchSprite(key) {
-    if (this.image === this.animations[key] || !this.loaded) return;
+    if (this.image === this.animations[key].image || !this.loaded) return;
 
+    this.currentFrame = 0;
     this.image = this.animations[key].image;
     this.frameBuffer = this.animations[key].frameBuffer;
     this.frameRate = this.animations[key].frameRate;
@@ -45,7 +46,6 @@ class Player extends Sprite {
     //draws out image
     // c.fillStyle = "rgba(0, 255, 0, 0.2)";
     // c.fillRect(this.position.x, this.position.y, this.width, this.height);
-
     // //draws out hitbox
     // c.fillStyle = "rgba(255, 0, 0, 0.2)";
     // c.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
