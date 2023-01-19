@@ -120,6 +120,13 @@ const background = new Sprite({
   imageSrc: "./img/background.png",
 });
 
+const camera = {
+  position: {
+    x: 0,
+    y: 0,
+  },
+};
+
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "white";
@@ -127,7 +134,10 @@ function animate() {
 
   c.save();
   c.scale(4, 4);
-  c.translate(0, -background.image.height + scaledCanvas.height);
+  c.translate(
+    camera.position.x,
+    -background.image.height + scaledCanvas.height
+  );
   background.update();
 
   collisionBlocks.forEach((collisionBlock) => {
@@ -138,6 +148,7 @@ function animate() {
     block.update();
   });
 
+  player.checkForHorizontalCanvasCollision();
   player.update();
 
   //move player
@@ -147,10 +158,12 @@ function animate() {
     player.switchSprite("Run");
     player.velocity.x = 2;
     player.lastDirection = "right";
+    player.shouldPanCameraToTheLeft({ canvas, camera });
   } else if (keys.a.pressed) {
     player.switchSprite("RunLeft");
     player.velocity.x = -2;
     player.lastDirection = "left";
+    player.shouldPanCameraToTheLeft({ canvas, camera });
   } else if (player.velocity.y === 0) {
     if (player.lastDirection === "right") player.switchSprite("Idle");
     else player.switchSprite("IdleLeft");
