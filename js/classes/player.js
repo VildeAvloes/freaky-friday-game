@@ -1,5 +1,13 @@
 class Player extends Sprite {
-  constructor({ postion, collisionBlocks, imageSrc, frameRate, scale = 0.5, animations }) {
+  constructor({
+    postion,
+    collisionBlocks,
+    platformCollisionBlocks,
+    imageSrc,
+    frameRate,
+    scale = 0.5,
+    animations,
+  }) {
     super({ imageSrc, frameRate, scale });
     this.position = postion;
     this.velocity = {
@@ -8,6 +16,7 @@ class Player extends Sprite {
     };
 
     this.collisionBlocks = collisionBlocks;
+    this.platformCollisionBlocks = platformCollisionBlocks;
     this.hitbox = {
       position: {
         x: this.position.x,
@@ -84,7 +93,8 @@ class Player extends Sprite {
           this.velocity.x = 0;
 
           //hitbox right
-          const offset = this.hitbox.position.x - this.position.x + this.hitbox.width;
+          const offset =
+            this.hitbox.position.x - this.position.x + this.hitbox.width;
 
           this.position.x = collisionBlock.position.x - offset - 0.01;
           break;
@@ -95,7 +105,8 @@ class Player extends Sprite {
           //hitbox left
           const offset = this.hitbox.position.x - this.position.x;
 
-          this.position.x = collisionBlock.position.x + collisionBlock.width - offset + 0.01;
+          this.position.x =
+            collisionBlock.position.x + collisionBlock.width - offset + 0.01;
           break;
         }
       }
@@ -121,7 +132,8 @@ class Player extends Sprite {
           this.velocity.y = 0;
 
           //bottom of the hitbox
-          const offset = this.hitbox.position.y - this.position.y + this.hitbox.height;
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
 
           this.position.y = collisionBlock.position.y - offset - 0.01;
           break;
@@ -133,7 +145,31 @@ class Player extends Sprite {
           const offset = this.hitbox.position.y - this.position.y;
 
           //bottom
-          this.position.y = collisionBlock.position.y + collisionBlock.height - offset + 0.01;
+          this.position.y =
+            collisionBlock.position.y + collisionBlock.height - offset + 0.01;
+          break;
+        }
+      }
+    }
+
+    //platform collision blocks
+    for (let i = 0; i < this.platformCollisionBlocks.length; i++) {
+      const platformCollisionBlock = this.platformCollisionBlocks[i];
+
+      if (
+        platformCollision({
+          object1: this.hitbox,
+          object2: platformCollisionBlock,
+        })
+      ) {
+        if (this.velocity.y > 0) {
+          this.velocity.y = 0;
+
+          //bottom of the hitbox
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
+
+          this.position.y = platformCollisionBlock.position.y - offset - 0.01;
           break;
         }
       }
