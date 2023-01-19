@@ -98,6 +98,14 @@ class Player extends Sprite {
     }
   }
 
+  shouldPanCameraToTheDown({ canvas, camera }) {
+    // if (this.camerabox.position.x <= 0) return;
+
+    if (this.camerabox.position.y <= Math.abs(camera.position.y)) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
   update() {
     this.updateFrames();
     this.updateHitbox();
