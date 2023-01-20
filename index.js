@@ -55,7 +55,7 @@ platformCollisions2D.forEach((row, y) => {
 const gravity = 0.1;
 
 const player = new Player({
-  postion: {
+  position: {
     x: 100,
     y: 300,
   },
@@ -100,6 +100,11 @@ const player = new Player({
       frameRate: 8,
       frameBuffer: 3,
     },
+    JumpLeft: {
+      imageSrc: "./img/warrior/JumpLeft.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
   },
 });
 
@@ -138,13 +143,13 @@ function animate() {
   c.translate(camera.position.x, camera.position.y);
   background.update();
 
-  collisionBlocks.forEach((collisionBlock) => {
-    collisionBlock.update();
-  });
+  // collisionBlocks.forEach((collisionBlock) => {
+  //   collisionBlock.update();
+  // });
 
-  platformCollisionBlocks.forEach((block) => {
-    block.update();
-  });
+  // platformCollisionBlocks.forEach((block) => {
+  //   block.update();
+  // });
 
   player.checkForHorizontalCanvasCollision();
   player.update();
@@ -172,6 +177,7 @@ function animate() {
     if (player.lastDirection === "right") player.switchSprite("Jump");
     else player.switchSprite("JumpLeft");
   } else if (player.velocity.y > 0) {
+    player.shouldPanCameraUp({ camera, canvas });
     if (player.lastDirection === "right") player.switchSprite("Fall");
     else player.switchSprite("FallLeft");
   }

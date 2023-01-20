@@ -1,6 +1,12 @@
 //sprite = image within gamelang
 class Sprite {
-  constructor({ position, imageSrc, frameRate = 1, frameBuffer = 3, scale = 1 }) {
+  constructor({
+    position,
+    imageSrc,
+    frameRate = 1,
+    frameBuffer = 3,
+    scale = 1,
+  }) {
     this.position = position;
     this.scale = scale;
     this.loaded = false;
@@ -16,6 +22,7 @@ class Sprite {
     this.frameBuffer = frameBuffer;
     this.elapsedFrames = 0;
   }
+
   draw() {
     if (!this.image) return;
 
@@ -28,7 +35,18 @@ class Sprite {
       width: this.image.width / this.frameRate,
       height: this.image.height,
     };
-    c.drawImage(this.image, cropbox.position.x, cropbox.position.y, cropbox.width, cropbox.height, this.position.x, this.position.y, this.width, this.height);
+
+    c.drawImage(
+      this.image,
+      cropbox.position.x,
+      cropbox.position.y,
+      cropbox.width,
+      cropbox.height,
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
   }
 
   update() {
